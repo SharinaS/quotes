@@ -4,18 +4,35 @@
 package quotes;
 
 import com.google.gson.Gson;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class App {
-    
+
     public static void main(String[] args) throws FileNotFoundException {
         try {
-            System.out.println(new App().getNumbersAPI());
+
+
+
+            // access key value pairs from constructor in class Quote
+            Quote quote = new Quote("", new App().getNumbersAPI());
+
+            // transform the quote into json and use quoteWriter to send the quote to the json file
+            FileWriter quoteWriter = new FileWriter("/src/main/resources/apiquotestest.json");
+            Gson gson = new Gson();
+            gson.toJson(quote, quoteWriter);
+
+            // print out the quote to the console (which was also stored to json file)
+            System.out.println(quote);
+
+            //System.out.println(gson.toJson(new App().getNumbersAPI()));
+
+            quoteWriter.close();
+
+
         } catch (IOException e) {
-            // there was no internet
+            // couldn't access the api, so get something from the json file
             readQuoteFromFile();
         }
     }
@@ -35,8 +52,8 @@ public class App {
 
 
     // === API ===
-    // Resources: http://numbersapi.com/#42
-    //
+    // API comes from: http://numbersapi.com/#42
+    // base code to read from an api from Michelle Ferreirae
     public String getNumbersAPI() throws IOException {
         //URL jqueryUrl = new URL("http://numbersapi.com/12/12/date");
         URL jqueryUrl = new URL("http://numbersapi.com/random/year");
@@ -53,6 +70,7 @@ public class App {
         return data.toString();
     }
 
+
     // === HELPER METHOD ===
     // get a random quote from an array of quotes using a helper method
     public static Quote getRandomQuote(Quote[] quotes) {
@@ -60,5 +78,4 @@ public class App {
         int index = (int)(Math.random() * quotes.length);
         return quotes[index];
     }
-
 }
