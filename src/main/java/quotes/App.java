@@ -4,6 +4,9 @@
 package quotes;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -19,9 +22,26 @@ public class App {
             Quote quote = new Quote("", new App().getNumbersAPI());
 
             // transform the quote into json and use quoteWriter to send the quote to the json file
-            FileWriter quoteWriter = new FileWriter("/src/main/resources/apiquotestest.json");
+            FileWriter quoteWriter = new FileWriter("src/main/resources/apiquotestest.json");
             Gson gson = new Gson();
+            // send quote to json file (which overwrites current quote)
             gson.toJson(quote, quoteWriter);
+
+
+
+//            Quote[] quotes = new Quote[2];
+//            quotes[0] = quote;
+//            quotes[1] = quote;
+//            gson.toJson(quotes, quoteWriter);
+
+            Quote[] superCoolQuotesArray = gson.fromJson(
+                    new FileReader(new File("src/main/resources/recentquotes.json")),
+                    Quote[].class);
+            // create new quote array + 1
+            // add quote to superCoolQuotesArray + 1
+            // gson.toJson superCoolQuotesArray, quotewriter
+
+
 
             // print out the quote to the console (which was also stored to json file)
             System.out.println(quote);
