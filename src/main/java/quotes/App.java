@@ -4,14 +4,27 @@
 package quotes;
 
 import com.google.gson.Gson;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class App {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    // Question - Does the Gson code need its own method before adding in api code?
 
+    public static void main(String[] args) throws FileNotFoundException {
+        try {
+            System.out.println(new App().getNumbersAPI());
+        } catch (IOException e) {
+            // there was no internet
+            readQuoteFromFile();
+        }
+    }
+
+    // === JSON SUPPLIES QUOTE ===
+    public static void readQuoteFromFile() throws FileNotFoundException {
+        // === Put quotes from JSON into Array ===
         // read all quotes from file into superCoolQuotesArray variable
         Gson gson = new Gson();
         Quote[] superCoolQuotesArray = gson.fromJson(
@@ -22,10 +35,32 @@ public class App {
         System.out.println(getRandomQuote(superCoolQuotesArray));
     }
 
+
+    // === API ===
+    // Resources: http://numbersapi.com/#42
+    // 
+    public String getNumbersAPI() throws IOException {
+        //URL jqueryUrl = new URL("http://numbersapi.com/12/12/date");
+        URL jqueryUrl = new URL("http://numbersapi.com/random/year");
+        HttpURLConnection connection = (HttpURLConnection) jqueryUrl.openConnection();
+        // read
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder data = new StringBuilder();
+        String line = reader.readLine();
+        // if something is there, read line
+        while(line != null) {
+            data.append(line);
+            line = reader.readLine();
+        }
+        return data.toString();
+    }
+
+    // === HELPER METHOD ===
     // get a random quote from an array of quotes using a helper method
     public static Quote getRandomQuote(Quote[] quotes) {
         // get random number
         int index = (int)(Math.random() * quotes.length);
         return quotes[index];
     }
+
 }
