@@ -10,9 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class App {
-
-    // Question - Does the Gson code need its own method before adding in api code?
-
+    
     public static void main(String[] args) throws FileNotFoundException {
         try {
             System.out.println(new App().getNumbersAPI());
@@ -38,7 +36,7 @@ public class App {
 
     // === API ===
     // Resources: http://numbersapi.com/#42
-    // 
+    //
     public String getNumbersAPI() throws IOException {
         //URL jqueryUrl = new URL("http://numbersapi.com/12/12/date");
         URL jqueryUrl = new URL("http://numbersapi.com/random/year");
