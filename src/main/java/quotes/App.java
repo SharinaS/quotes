@@ -4,65 +4,64 @@
 package quotes;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class App {
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws IOException {
         try {
-
-            // access key value pairs from constructor in class Quote to format what we get from API
-            Quote quote = new Quote("", new App().getNumbersAPI());
-            // print out the quote to the console (which was also stored to json file)
-            System.out.println(quote);
-
-            // Use the file writer to access the json file and use gson
-            Reader fileReader = new FileReader(new File("src/main/resources/recentquotes.json"));
-
-            Gson gson = new Gson();
-
-            // make a quote array
-            Quote[] origQuotesArr = gson.fromJson(fileReader, Quote[].class);
-//            System.out.println("1st quote from end of origArr" + origQuotesArr[origQuotesArr.length-1]); // prints last line from origQuotesArr
-
-            // make a new array that is longer by 1
-            Quote[] newQuotesArr = new Quote[origQuotesArr.length + 1];
-
-
-            // add all the quotes into the new array
-            for(int i = 0; i < origQuotesArr.length; i++){
-                newQuotesArr[i] = origQuotesArr[i];
-            }
-
-            // tack on a new quote to the end of the new array
-            newQuotesArr[newQuotesArr.length-1] = quote;
-
-            // checks last 3 lines of new quotes array
-//            System.out.println("3rd quote from end of newArr: " + newQuotesArr[newQuotesArr.length-3]);
-//            System.out.println("2nd quote from end of newArr: " + newQuotesArr[newQuotesArr.length-2]);
-//            System.out.println("1st quote from end of newArr: " + newQuotesArr[newQuotesArr.length-1]);
-
-            // replace stuff in json file with new array stuff
-            FileWriter quoteWriter = new FileWriter("src/main/resources/recentquotes.json");
-            gson.toJson(newQuotesArr, quoteWriter);
-
-            // close the quoteWriter
-            quoteWriter.close();
-
-
-        } catch (IOException e) {
-            // cannot access the api, so get something from the json file instead
+            cacheQuoteToFile();
+        } catch (IOException e){
             readQuoteFromFile();
         }
     }
 
 
-    // === JSON SUPPLIES QUOTE ===
+    // === PUT QUOTE FROM API IN JSON FILE AND PRINT OUT ===
+    public static void cacheQuoteToFile() throws IOException {
+        // access key value pairs from constructor in class Quote to format what we get from API
+        Quote quote = new Quote("", new App().getNumbersAPI());
+
+        // print out the quote to the console (quote also stored to json file)
+        System.out.println(quote);
+
+        // Use the file writer to access the json file and use gson
+        Reader fileReader = new FileReader(new File("src/main/resources/recentquotes.json"));
+        Gson gson = new Gson();
+
+        // make a quote array
+        Quote[] origQuotesArr = gson.fromJson(fileReader, Quote[].class);
+//            System.out.println("1st quote from end of origArr" + origQuotesArr[origQuotesArr.length-1]); // prints last line from origQuotesArr
+
+        // make a new array that is longer by 1
+        Quote[] newQuotesArr = new Quote[origQuotesArr.length + 1];
+
+
+        // add all the quotes into the new array
+        for(int i = 0; i < origQuotesArr.length; i++){
+            newQuotesArr[i] = origQuotesArr[i];
+        }
+
+        // tack on a new quote to the end of the new array
+        newQuotesArr[newQuotesArr.length-1] = quote;
+
+        // checks last 3 lines of new quotes array
+//            System.out.println("3rd quote from end of newArr: " + newQuotesArr[newQuotesArr.length-3]);
+//            System.out.println("2nd quote from end of newArr: " + newQuotesArr[newQuotesArr.length-2]);
+//            System.out.println("1st quote from end of newArr: " + newQuotesArr[newQuotesArr.length-1]);
+
+        // replace stuff in json file with new array stuff
+        FileWriter quoteWriter = new FileWriter("src/main/resources/recentquotes.json");
+        gson.toJson(newQuotesArr, quoteWriter);
+
+        // close the quoteWriter
+        quoteWriter.close();
+    }
+
+
+    // === GET A QUOTE FROM JSON FILE TO PRINT WHEN INTERNET DOWN ===
     public static void readQuoteFromFile() throws FileNotFoundException {
         // === Put quotes from JSON into Array ===
         // read all quotes from file into superCoolQuotesArray variable
@@ -76,25 +75,25 @@ public class App {
     }
 
 
-    // === API ===
+    // === ACCESS API TO GET A QUOTE ===
     // API comes from: http://numbersapi.com/#42
     // base code to read from an api from Michelle Ferreirae
 
     public String getNumbersAPI() throws IOException {
-        //URL jqueryUrl = new URL("http://numbersapi.com/12/12/date");
+        // go to API
         URL jqueryUrl = new URL("http://numbersapi.com/random/year");
         HttpURLConnection connection = (HttpURLConnection) jqueryUrl.openConnection();
 
-        // read
+        // access data
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder data = new StringBuilder();
         String line = reader.readLine();
 
-        // if something is there, read line
         while(line != null) {
             data.append(line);
             line = reader.readLine();
         }
+        // provide data in a string format
         return data.toString();
     }
 
