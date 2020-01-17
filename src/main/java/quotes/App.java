@@ -47,11 +47,6 @@ public class App {
         // tack on a new quote to the end of the new array
         newQuotesArr[newQuotesArr.length-1] = quote;
 
-        // checks last 3 lines of new quotes array
-//            System.out.println("3rd quote from end of newArr: " + newQuotesArr[newQuotesArr.length-3]);
-//            System.out.println("2nd quote from end of newArr: " + newQuotesArr[newQuotesArr.length-2]);
-//            System.out.println("1st quote from end of newArr: " + newQuotesArr[newQuotesArr.length-1]);
-
         // replace stuff in json file with new array stuff
         FileWriter quoteWriter = new FileWriter("src/main/resources/recentquotes.json");
         gson.toJson(newQuotesArr, quoteWriter);
