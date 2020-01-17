@@ -19,4 +19,7 @@ public class Quote {
                 this.author,
                 this.text);
     }
+
+    // ?Consider: When dealing with an API that has different keys for its JSON, requiring different instance
+    // variables, create more instance variables and make an overloaded constructor?
 }

@@ -6,6 +6,7 @@ package quotes;
 import com.google.gson.Gson;
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class App {
@@ -22,10 +23,12 @@ public class App {
     // === PUT QUOTE FROM API IN JSON FILE AND PRINT OUT ===
     public static void cacheQuoteToFile() throws IOException {
         // access key value pairs from constructor in class Quote to format what we get from API
-        Quote quote = new Quote("", new App().getNumbersAPI());
+        Quote numbersQuote = new Quote("", new App().getNumbersAPI());
+
+        //TODO: make a Quote for Star Wars quote, after using an overloaded constructor for Star Wars, and print it out.
 
         // print out the quote to the console (quote also stored to json file)
-        System.out.println(quote);
+        System.out.println(numbersQuote);
 
         // Use the file writer to access the json file and use gson
         Reader fileReader = new FileReader(new File("src/main/resources/recentquotes.json"));
@@ -33,7 +36,6 @@ public class App {
 
         // make a quote array
         Quote[] origQuotesArr = gson.fromJson(fileReader, Quote[].class);
-//            System.out.println("1st quote from end of origArr" + origQuotesArr[origQuotesArr.length-1]); // prints last line from origQuotesArr
 
         // make a new array that is longer by 1
         Quote[] newQuotesArr = new Quote[origQuotesArr.length + 1];
@@ -45,7 +47,7 @@ public class App {
         }
 
         // tack on a new quote to the end of the new array
-        newQuotesArr[newQuotesArr.length-1] = quote;
+        newQuotesArr[newQuotesArr.length-1] = numbersQuote;
 
         // replace stuff in json file with new array stuff
         FileWriter quoteWriter = new FileWriter("src/main/resources/recentquotes.json");
@@ -56,7 +58,7 @@ public class App {
     }
 
 
-    // === GET A QUOTE FROM JSON FILE TO PRINT WHEN INTERNET DOWN ===
+    // === GET A QUOTE DIRECTLY FROM JSON FILE TO PRINT WHEN INTERNET DOWN ===
     public static void readQuoteFromFile() throws FileNotFoundException {
         // === Put quotes from JSON into Array ===
         // read all quotes from file into superCoolQuotesArray variable
@@ -72,7 +74,7 @@ public class App {
 
     // === ACCESS API TO GET A QUOTE ===
     // API comes from: http://numbersapi.com/#42
-    // base code to read from an api from Michelle Ferreirae
+    // base code to read from an api from Michelle Ferreirae - very standard code
 
     public String getNumbersAPI() throws IOException {
         // go to API
@@ -92,9 +94,23 @@ public class App {
         return data.toString();
     }
 
+    public String getStarWarsAPI() throws IOException {
+        URL jqueryURL = new URL("http://swquotesapi.digitaljedi.dk/api/SWQuote/RandomStarWarsQuote");
+        HttpURLConnection connection = (HttpURLConnection) jqueryURL.openConnection();
 
-    // === HELPER METHOD ===
-    // get a random quote from an array of quotes using a helper method
+        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder data = new StringBuilder();
+        String line = reader.readLine();
+
+        while(line != null) {
+            data.append(line);
+            line = reader.readLine();
+        }
+        return data.toString();
+    }
+
+
+    // === HELPER METHOD - Get random quote from array of quotes ===
     public static Quote getRandomQuote(Quote[] quotes) {
         int index = (int)(Math.random() * quotes.length);
         return quotes[index];
