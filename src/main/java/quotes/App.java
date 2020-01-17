@@ -6,7 +6,6 @@ package quotes;
 import com.google.gson.Gson;
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class App {
@@ -25,10 +24,13 @@ public class App {
         // access key value pairs from constructor in class Quote to format what we get from API
         Quote numbersQuote = new Quote("", new App().getNumbersAPI());
 
-        //TODO: make a Quote for Star Wars quote, after using an overloaded constructor for Star Wars, and print it out.
+        Quote starWarsQuote = new Quote(new App().getStarWarsAPI());
 
         // print out the quote to the console (quote also stored to json file)
         System.out.println(numbersQuote);
+        System.out.println(starWarsQuote.starWarsString());
+
+        /////////////////////
 
         // Use the file writer to access the json file and use gson
         Reader fileReader = new FileReader(new File("src/main/resources/recentquotes.json"));
